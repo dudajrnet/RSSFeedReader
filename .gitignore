@@ -1,0 +1,18 @@
+# .NET build outputs and user-specific files
+bin/
+obj/
+*.user
+*.suo
+packages/
+
+# Local environment and temporary files
+.env*
+*.log
+*.tmp
+*.swp
+
+# Operating system and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

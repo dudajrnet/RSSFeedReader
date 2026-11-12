@@ -12,11 +12,11 @@ validated as an independent increment.
 **Purpose**: Create the .NET solution, application projects, and test project required
 by the implementation plan.
 
-- [ ] T001 [P] Create the .NET solution file `RSSFeedReader.sln` at the repository root for the `net10.0` projects.
-- [ ] T002 [P] Scaffold the ASP.NET Core Minimal API project targeting `net10.0` in `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj`; do not add feed-fetching or feed-parsing dependencies.
-- [ ] T003 [P] Scaffold the Blazor WebAssembly project targeting `net10.0` in `frontend/RSSFeedReader.UI/RSSFeedReader.UI.csproj`.
-- [ ] T004 [P] Scaffold the xUnit test project targeting `net10.0` in `tests/RSSFeedReader.Api.Tests/RSSFeedReader.Api.Tests.csproj` and add a compatible `Microsoft.AspNetCore.Mvc.Testing` package reference.
-- [ ] T005 Add the API, UI, and test projects to `RSSFeedReader.sln`, and add a project reference from `tests/RSSFeedReader.Api.Tests/RSSFeedReader.Api.Tests.csproj` to `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj`.
+- [X] T001 [P] Create the .NET solution file `RSSFeedReader.sln` at the repository root for the `net10.0` projects.
+- [X] T002 [P] Scaffold the ASP.NET Core Minimal API project targeting `net10.0` in `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj`; do not add feed-fetching or feed-parsing dependencies.
+- [X] T003 [P] Scaffold the Blazor WebAssembly project targeting `net10.0` in `frontend/RSSFeedReader.UI/RSSFeedReader.UI.csproj`.
+- [X] T004 [P] Scaffold the xUnit test project targeting `net10.0` in `tests/RSSFeedReader.Api.Tests/RSSFeedReader.Api.Tests.csproj` and add a compatible `Microsoft.AspNetCore.Mvc.Testing` package reference.
+- [X] T005 Add the API, UI, and test projects to `RSSFeedReader.sln`, and add a project reference from `tests/RSSFeedReader.Api.Tests/RSSFeedReader.Api.Tests.csproj` to `backend/RSSFeedReader.Api/RSSFeedReader.Api.csproj`.
 
 ---
 
@@ -24,10 +24,10 @@ by the implementation plan.
 
 **Purpose**: Complete shared setup that must be in place before the subscription story.
 
-- [ ] T006 [P] Remove the template demo pages `frontend/RSSFeedReader.UI/Pages/Home.razor`, `frontend/RSSFeedReader.UI/Pages/Counter.razor`, and `frontend/RSSFeedReader.UI/Pages/Weather.razor`; remove their links from `frontend/RSSFeedReader.UI/Layout/NavMenu.razor`.
-- [ ] T007 [P] Configure the API and UI local origins and cross-origin access in `backend/RSSFeedReader.Api/Properties/launchSettings.json`, `backend/RSSFeedReader.Api/Program.cs`, `frontend/RSSFeedReader.UI/Properties/launchSettings.json`, and `frontend/RSSFeedReader.UI/wwwroot/appsettings.json`; align with the documented API port `5151` and UI port `5213`.
-- [ ] T008 Expose the web entry point as `public partial class Program` in `backend/RSSFeedReader.Api/Program.cs` so `WebApplicationFactory` can host the API in integration tests.
-- [ ] T009 Build `RSSFeedReader.sln` and verify the scaffold compiles and the removed demo routes do not leave duplicate or conflicting routes in `frontend/RSSFeedReader.UI/Pages/`.
+- [X] T006 [P] Remove the template demo pages `frontend/RSSFeedReader.UI/Pages/Home.razor`, `frontend/RSSFeedReader.UI/Pages/Counter.razor`, and `frontend/RSSFeedReader.UI/Pages/Weather.razor`; remove their links from `frontend/RSSFeedReader.UI/Layout/NavMenu.razor`.
+- [X] T007 [P] Configure the API and UI local origins and cross-origin access in `backend/RSSFeedReader.Api/Properties/launchSettings.json`, `backend/RSSFeedReader.Api/Program.cs`, `frontend/RSSFeedReader.UI/Properties/launchSettings.json`, and `frontend/RSSFeedReader.UI/wwwroot/appsettings.json`; align with the documented API port `5151` and UI port `5213`.
+- [X] T008 Expose the web entry point as `public partial class Program` in `backend/RSSFeedReader.Api/Program.cs` so `WebApplicationFactory` can host the API in integration tests.
+- [X] T009 Build `RSSFeedReader.sln` and verify the scaffold compiles and the removed demo routes do not leave duplicate or conflicting routes in `frontend/RSSFeedReader.UI/Pages/`.
 
 **Checkpoint**: Solution projects build, shared local configuration is aligned, and template route conflicts are cleared.
 
@@ -45,16 +45,16 @@ blank input, and that restarting clears the list.
 
 ### Tests for User Story 1
 
-- [ ] T010 [US1] Add API integration tests in `tests/RSSFeedReader.Api.Tests/SubscriptionsApiTests.cs` for an initially empty `GET`, successful `POST` followed by `GET`, duplicate preservation, and blank or missing `url` returning `400` without changing the list; run the tests and confirm they fail on the unimplemented endpoints.
+- [X] T010 [US1] Add API integration tests in `tests/RSSFeedReader.Api.Tests/SubscriptionsApiTests.cs` for an initially empty `GET`, successful `POST` followed by `GET`, non-URL value preservation, duplicate preservation, and blank or missing `url` returning `400` without changing the list; run the tests and confirm they fail on the unimplemented endpoints.
 
 ### Implementation for User Story 1
 
-- [ ] T011 [P] [US1] Implement the process-local subscription collection in `backend/RSSFeedReader.Api/Services/SubscriptionStore.cs` and register it as a singleton in `backend/RSSFeedReader.Api/Program.cs`; the `url` field rule is: “Must contain a non-whitespace character. Preserve the submitted value; do not validate URL syntax, reachability, or feed format.” Preserve duplicates and do not make network requests.
-- [ ] T012 [P] [US1] Implement `SubscriptionApiClient` in `frontend/RSSFeedReader.UI/Services/SubscriptionApiClient.cs` for the contracted `GET` and `POST` operations, and register it in `frontend/RSSFeedReader.UI/Program.cs` using the configured API base URL.
-- [ ] T013 [P] [US1] Map `GET /api/subscriptions` and `POST /api/subscriptions` in `backend/RSSFeedReader.Api/Program.cs` using `backend/RSSFeedReader.Api/Services/SubscriptionStore.cs`; return `200` with the string list, `204` for an accepted add, and `400` for a missing or whitespace-only value, preserving non-empty values and duplicates without URL validation or feed requests.
-- [ ] T014 [P] [US1] Create the root subscription page in `frontend/RSSFeedReader.UI/Pages/Subscriptions.razor` with a URL input and list; ignore empty or whitespace-only submissions, preserve submitted values, refresh the list after successful adds, render values as text, and show API failures instead of silently swallowing them.
-- [ ] T015 [US1] Add a `Subscriptions` navigation link to the root page in `frontend/RSSFeedReader.UI/Layout/NavMenu.razor`.
-- [ ] T016 [US1] Run `dotnet test tests/RSSFeedReader.Api.Tests` and build `RSSFeedReader.sln`; confirm the API integration tests pass for empty list, add/list, duplicate, and blank-input behavior.
+- [X] T011 [P] [US1] Implement the process-local subscription collection in `backend/RSSFeedReader.Api/Services/SubscriptionStore.cs` and register it as a singleton in `backend/RSSFeedReader.Api/Program.cs`; the `url` field rule is: “Must contain a non-whitespace character. Preserve the submitted value; do not validate URL syntax, reachability, or feed format.” Preserve duplicates and do not make network requests.
+- [X] T012 [P] [US1] Implement `SubscriptionApiClient` in `frontend/RSSFeedReader.UI/Services/SubscriptionApiClient.cs` for the contracted `GET` and `POST` operations, and register it in `frontend/RSSFeedReader.UI/Program.cs` using the configured API base URL.
+- [X] T013 [P] [US1] Map `GET /api/subscriptions` and `POST /api/subscriptions` in `backend/RSSFeedReader.Api/Program.cs` using `backend/RSSFeedReader.Api/Services/SubscriptionStore.cs`; return `200` with the string list, `204` for an accepted add, and `400` for a missing or whitespace-only value, preserving non-empty values and duplicates without URL validation or feed requests.
+- [X] T014 [P] [US1] Create the root subscription page in `frontend/RSSFeedReader.UI/Pages/Subscriptions.razor` with a URL input and list; ignore empty or whitespace-only submissions, preserve submitted values, refresh the list after successful adds, render values as text, and show API failures instead of silently swallowing them.
+- [X] T015 [US1] Add a `Subscriptions` navigation link to the root page in `frontend/RSSFeedReader.UI/Layout/NavMenu.razor`.
+- [X] T016 [US1] Run `dotnet test tests/RSSFeedReader.Api.Tests` and build `RSSFeedReader.sln`; confirm the API integration tests pass for empty list, add/list, duplicate, and blank-input behavior.
 
 **Checkpoint**: User Story 1 is independently functional and testable through the API and UI.
 
@@ -64,7 +64,7 @@ blank input, and that restarting clears the list.
 
 **Purpose**: Verify the complete quickstart and the MVP's security and scope boundaries.
 
-- [ ] T017 Run the build, test, API, and browser scenarios in `specs/001-rss-subscription-mvp/quickstart.md`; verify restart clears subscriptions and add/list operations make no requests to submitted feed URLs.
+- [X] T017 Run the build, test, API, and browser scenarios in `specs/001-rss-subscription-mvp/quickstart.md`; verify restart clears subscriptions and add/list operations make no requests to submitted feed URLs.
 
 ---
 

@@ -1,0 +1,100 @@
+@page "/"
+@using System.IO
+@using RSSFeedReader.UI.Services
+@inject SubscriptionApiClient Api
+
+<PageTitle>Subscriptions</PageTitle>
+
+<h1>Subscriptions</h1>
+
+<form @onsubmit="AddSubscriptionAsync" @onsubmit:preventDefault>
+    <label for="subscription-url">Feed URL</label>
+    <div class="input-group">
+        <input id="subscription-url"
+               class="form-control"
+               type="text"
+               @bind="url"
+               @bind:event="oninput"
+               aria-label="Feed URL" />
+        <button class="btn btn-primary"
+                type="submit"
+                disabled="@string.IsNullOrWhiteSpace(url)">
+            Add subscription
+        </button>
+    </div>
+</form>
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <p class="text-danger" role="alert">@errorMessage</p>
+}
+
+@if (subscriptions is null)
+{
+    <p>Subscriptions are unavailable until the API can be reached.</p>
+}
+else if (subscriptions.Count == 0)
+{
+    <p>No subscriptions yet.</p>
+}
+else
+{
+    <ul>
+        @foreach (var subscription in subscriptions)
+        {
+            <li>@subscription</li>
+        }
+    </ul>
+}
+
+@code {
+    private string url = string.Empty;
+    private IReadOnlyList<string>? subscriptions;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSubscriptionsAsync();
+    }
+
+    private async Task AddSubscriptionAsync()
+    {
+        if (string.IsNullOrWhiteSpace(url))
+        {
+            return;
+        }
+
+        errorMessage = null;
+
+        try
+        {
+            await Api.AddSubscriptionAsync(url);
+            subscriptions = await Api.GetSubscriptionsAsync();
+            url = string.Empty;
+        }
+        catch (HttpRequestException exception)
+        {
+            errorMessage = $"The subscription could not be saved or loaded: {exception.Message}";
+        }
+        catch (InvalidDataException exception)
+        {
+            errorMessage = $"The subscriptions API returned invalid data: {exception.Message}";
+        }
+    }
+
+    private async Task LoadSubscriptionsAsync()
+    {
+        try
+        {
+            subscriptions = await Api.GetSubscriptionsAsync();
+        }
+        catch (HttpRequestException exception)
+        {
+            errorMessage = $"The subscription list could not be loaded: {exception.Message}";
+        }
+        catch (InvalidDataException exception)
+        {
+            errorMessage = $"The subscriptions API returned invalid data: {exception.Message}";
+        }
+    }
+}
